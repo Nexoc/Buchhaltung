@@ -1,0 +1,389 @@
+### 1. Январь 2025
+POST http://localhost:8001/api/sales
+Content-Type: application/json
+Accept: application/json
+
+{
+  "productId": 1,
+  "quantity": 3,
+  "paymentMethod": "CASH",
+  "comment": "Покупка на кассе",
+  "saleTime": "2025-01-15T10:00:00"
+}
+
+### 2. Февраль 2025
+POST http://localhost:8001/api/sales
+Content-Type: application/json
+Accept: application/json
+
+{
+  "productId": 1,
+  "quantity": 3,
+  "paymentMethod": "CASH",
+  "comment": "Покупка на кассе",
+  "saleTime": "2025-02-15T10:00:00"
+}
+
+### 3. Март 2025
+POST http://localhost:8001/api/sales
+Content-Type: application/json
+Accept: application/json
+
+{
+  "productId": 1,
+  "quantity": 3,
+  "paymentMethod": "CASH",
+  "comment": "Покупка на кассе",
+  "saleTime": "2025-03-15T10:00:00"
+}
+
+### 4. Апрель 2025
+POST http://localhost:8001/api/sales
+Content-Type: application/json
+Accept: application/json
+
+{
+  "productId": 1,
+  "quantity": 3,
+  "paymentMethod": "CASH",
+  "comment": "Покупка на кассе",
+  "saleTime": "2025-04-15T10:00:00"
+}
+
+### 5. Май 2025
+POST http://localhost:8001/api/sales
+Content-Type: application/json
+Accept: application/json
+
+{
+  "productId": 1,
+  "quantity": 3,
+  "paymentMethod": "CASH",
+  "comment": "Покупка на кассе",
+  "saleTime": "2025-05-15T10:00:00"
+}
+
+### 6. Июнь 2025
+POST http://localhost:8001/api/sales
+Content-Type: application/json
+Accept: application/json
+
+{
+  "productId": 1,
+  "quantity": 3,
+  "paymentMethod": "CASH",
+  "comment": "Покупка на кассе",
+  "saleTime": "2025-06-15T10:00:00"
+}
+
+### 7. Июль 2025
+POST http://localhost:8001/api/sales
+Content-Type: application/json
+Accept: application/json
+
+{
+  "productId": 1,
+  "quantity": 3,
+  "paymentMethod": "CASH",
+  "comment": "Покупка на кассе",
+  "saleTime": "2025-07-15T10:00:00"
+}
+
+### 8. Август 2025
+POST http://localhost:8001/api/sales
+Content-Type: application/json
+Accept: application/json
+
+{
+  "productId": 1,
+  "quantity": 3,
+  "paymentMethod": "CASH",
+  "comment": "Покупка на кассе",
+  "saleTime": "2025-08-15T10:00:00"
+}
+
+### 9. Сентябрь 2025
+POST http://localhost:8001/api/sales
+Content-Type: application/json
+Accept: application/json
+
+{
+  "productId": 1,
+  "quantity": 3,
+  "paymentMethod": "CASH",
+  "comment": "Покупка на кассе",
+  "saleTime": "2025-09-15T10:00:00"
+}
+
+### 10. Октябрь 2025
+POST http://localhost:8001/api/sales
+Content-Type: application/json
+Accept: application/json
+
+{
+  "productId": 1,
+  "quantity": 3,
+  "paymentMethod": "CASH",
+  "comment": "Покупка на кассе",
+  "saleTime": "2025-10-15T10:00:00"
+}
+
+### 11. Ноябрь 2025
+POST http://localhost:8001/api/sales
+Content-Type: application/json
+Accept: application/json
+
+{
+  "productId": 1,
+  "quantity": 3,
+  "paymentMethod": "CASH",
+  "comment": "Покупка на кассе",
+  "saleTime": "2025-11-15T10:00:00"
+}
+
+### 12. Декабрь 2025
+POST http://localhost:8001/api/sales
+Content-Type: application/json
+Accept: application/json
+
+{
+  "productId": 1,
+  "quantity": 3,
+  "paymentMethod": "CASH",
+  "comment": "Покупка на кассе",
+  "saleTime": "2025-12-15T10:00:00"
+}
+
+### 13. Январь 2026
+POST http://localhost:8001/api/sales
+Content-Type: application/json
+Accept: application/json
+
+{
+  "productId": 1,
+  "quantity": 3,
+  "paymentMethod": "CASH",
+  "comment": "Покупка на кассе",
+  "saleTime": "2026-01-15T10:00:00"
+}
+
+### 14. Февраль 2026
+POST http://localhost:8001/api/sales
+Content-Type: application/json
+Accept: application/json
+
+{
+  "productId": 1,
+  "quantity": 3,
+  "paymentMethod": "CASH",
+  "comment": "Покупка на кассе",
+  "saleTime": "2026-02-15T10:00:00"
+}
+
+### 15. Март 2026
+POST http://localhost:8001/api/sales
+Content-Type: application/json
+Accept: application/json
+
+{
+  "productId": 1,
+  "quantity": 3,
+  "paymentMethod": "CASH",
+  "comment": "Покупка на кассе",
+  "saleTime": "2026-03-15T10:00:00"
+}
+
+### 16. Апрель 2026
+POST http://localhost:8001/api/sales
+Content-Type: application/json
+Accept: application/json
+
+{
+  "productId": 1,
+  "quantity": 3,
+  "paymentMethod": "CASH",
+  "comment": "Покупка на кассе",
+  "saleTime": "2026-04-15T10:00:00"
+}
+
+### 17. Май 2026
+POST http://localhost:8001/api/sales
+Content-Type: application/json
+Accept: application/json
+
+{
+  "productId": 1,
+  "quantity": 3,
+  "paymentMethod": "CASH",
+  "comment": "Покупка на кассе",
+  "saleTime": "2026-05-15T10:00:00"
+}
+
+### 18. Июнь 2026
+POST http://localhost:8001/api/sales
+Content-Type: application/json
+Accept: application/json
+
+{
+  "productId": 1,
+  "quantity": 3,
+  "paymentMethod": "CASH",
+  "comment": "Покупка на кассе",
+  "saleTime": "2026-06-15T10:00:00"
+}
+
+### 19. Июль 2026
+POST http://localhost:8001/api/sales
+Content-Type: application/json
+Accept: application/json
+
+{
+  "productId": 1,
+  "quantity": 3,
+  "paymentMethod": "CASH",
+  "comment": "Покупка на кассе",
+  "saleTime": "2026-07-15T10:00:00"
+}
+
+### 20. Август 2026
+POST http://localhost:8001/api/sales
+Content-Type: application/json
+Accept: application/json
+
+{
+  "productId": 1,
+  "quantity": 3,
+  "paymentMethod": "CASH",
+  "comment": "Покупка на кассе",
+  "saleTime": "2026-08-15T10:00:00"
+}
+
+### 21. Сентябрь 2026
+POST http://localhost:8001/api/sales
+Content-Type: application/json
+Accept: application/json
+
+{
+  "productId": 1,
+  "quantity": 3,
+  "paymentMethod": "CASH",
+  "comment": "Покупка на кассе",
+  "saleTime": "2026-09-15T10:00:00"
+}
+
+### 22. Октябрь 2026
+POST http://localhost:8001/api/sales
+Content-Type: application/json
+Accept: application/json
+
+{
+  "productId": 1,
+  "quantity": 3,
+  "paymentMethod": "CASH",
+  "comment": "Покупка на кассе",
+  "saleTime": "2026-10-15T10:00:00"
+}
+
+### 23. Ноябрь 2026
+POST http://localhost:8001/api/sales
+Content-Type: application/json
+Accept: application/json
+
+{
+  "productId": 1,
+  "quantity": 3,
+  "paymentMethod": "CASH",
+  "comment": "Покупка на кассе",
+  "saleTime": "2026-11-15T10:00:00"
+}
+
+### 24. Декабрь 2026
+POST http://localhost:8001/api/sales
+Content-Type: application/json
+Accept: application/json
+
+{
+  "productId": 1,
+  "quantity": 3,
+  "paymentMethod": "CASH",
+  "comment": "Покупка на кассе",
+  "saleTime": "2026-12-15T10:00:00"
+}
+
+### 25. Январь 2027
+POST http://localhost:8001/api/sales
+Content-Type: application/json
+Accept: application/json
+
+{
+  "productId": 1,
+  "quantity": 3,
+  "paymentMethod": "CASH",
+  "comment": "Покупка на кассе",
+  "saleTime": "2027-01-15T10:00:00"
+}
+
+### 26. Февраль 2027
+POST http://localhost:8001/api/sales
+Content-Type: application/json
+Accept: application/json
+
+{
+  "productId": 1,
+  "quantity": 3,
+  "paymentMethod": "CASH",
+  "comment": "Покупка на кассе",
+  "saleTime": "2027-02-15T10:00:00"
+}
+
+### 27. Март 2027
+POST http://localhost:8001/api/sales
+Content-Type: application/json
+Accept: application/json
+
+{
+  "productId": 1,
+  "quantity": 3,
+  "paymentMethod": "CASH",
+  "comment": "Покупка на кассе",
+  "saleTime": "2027-03-15T10:00:00"
+}
+
+### 28. Апрель 2027
+POST http://localhost:8001/api/sales
+Content-Type: application/json
+Accept: application/json
+
+{
+  "productId": 1,
+  "quantity": 3,
+  "paymentMethod": "CASH",
+  "comment": "Покупка на кассе",
+  "saleTime": "2027-04-15T10:00:00"
+}
+
+### 29. Май 2027
+POST http://localhost:8001/api/sales
+Content-Type: application/json
+Accept: application/json
+
+{
+  "productId": 1,
+  "quantity": 3,
+  "paymentMethod": "CASH",
+  "comment": "Покупка на кассе",
+  "saleTime": "2027-05-15T10:00:00"
+}
+
+### 30. Июнь 2027
+POST http://localhost:8001/api/sales
+Content-Type: application/json
+Accept: application/json
+
+{
+  "productId": 1,
+  "quantity": 3,
+  "paymentMethod": "CASH",
+  "comment": "Покупка на кассе",
+  "saleTime": "2027-06-15T10:00:00"
+}

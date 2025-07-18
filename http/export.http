@@ -1,0 +1,19 @@
+### Ежедневный PDF‑отчёт
+GET http://localhost:8001/api/export/daily.pdf
+Accept: application/pdf
+
+### Еженедельный PDF‑отчёт
+GET http://localhost:8001/api/export/weekly.pdf
+Accept: application/pdf
+
+### Ежемесячный PDF‑отчёт за указанный год
+GET http://localhost:8001/api/export/monthly.pdf?year=2025
+Accept: application/pdf
+
+### Годовой PDF‑отчёт
+GET http://localhost:8001/api/export/yearly.pdf
+Accept: application/pdf
+
+### Сводный PDF‑отчёт за все годы
+GET http://localhost:8001/api/export/summary.pdf
+Accept: application/pdf

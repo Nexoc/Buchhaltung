@@ -106,4 +106,6 @@ public class ReportingService {
         AnnualSummary entity = annualRepo.findAll().stream().findFirst().orElse(null);
         return annualMapper.toDto(entity);
     }
+
+    
 }
