@@ -1,0 +1,36 @@
+### Получить все категории
+GET http://localhost:8001/api/categories
+Accept: application/json
+
+
+### Получить категорию по ID
+GET http://localhost:8001/api/categories/1
+Accept: application/json
+
+
+### Создать новую категорию
+POST http://localhost:8001/api/categories
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Овощи",
+  "description": "Свежие овощи"
+}
+
+
+### Обновить категорию
+PUT http://localhost:8001/api/categories/1
+Content-Type: application/json
+Accept: application/json
+
+{
+  "id": 1,
+  "name": "Фрукты",
+  "description": "Спелые фрукты"
+}
+
+
+### Удалить категорию
+DELETE http://localhost:8001/api/categories/2
+Accept: */*

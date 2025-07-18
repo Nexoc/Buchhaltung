@@ -1,0 +1,42 @@
+### Получить список всех продаж
+GET http://localhost:8001/api/sales
+Accept: application/json
+
+
+### Получить одну продажу по ID
+GET http://localhost:8001/api/sales/1
+Accept: application/json
+
+
+### Создать новую продажу
+POST http://localhost:8001/api/sales
+Content-Type: application/json
+Accept: application/json
+
+{
+  "productId": 1,
+  "quantity": 3,
+  "paymentMethod": "CASH",
+  "comment": "Покупка на кассе"
+}
+
+
+### Обновить продажу по ID
+PUT http://localhost:8001/api/sales/1
+Content-Type: application/json
+Accept: application/json
+
+{
+  "id": 1,
+  "productId": 1,
+  "quantity": 2,
+  "paymentMethod": "CARD",
+  "comment": "Изменено количество",
+  "saleTime": "2025-07-18T17:00:00"
+}
+
+
+
+### Удалить продажу по ID
+DELETE http://localhost:8001/api/sales/2
+Accept: */*

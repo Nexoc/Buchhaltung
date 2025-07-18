@@ -1,0 +1,19 @@
+# Maven / IntelliJ
+target/
+*.iml
+.idea/
+.classpath
+.project
+.settings/
+
+# Java
+*.class
+
+# Spring Boot Devtools
+spring-devtools.properties
+
+# logs
+*.log
+
+# IDE-specific
+.vscode/

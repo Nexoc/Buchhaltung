@@ -1,0 +1,60 @@
+### Получить все продукты
+GET http://localhost:8001/api/products
+Accept: application/json
+
+
+### Получить продукт по ID
+GET http://localhost:8001/api/products/1
+Accept: application/json
+
+
+### Создать продукт (без инструкции)
+POST http://localhost:8001/api/products
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Пример товара",
+  "price": 199.99,
+  "stock": 10,
+  "categoryId": 1,
+  "addedDate": "2025-07-18",
+  "imagePath": null,
+  "description": "Описание продукта",
+  "instructions": []
+}
+
+
+### Обновить продукт по ID (изменить описание и инструкции)
+PUT http://localhost:8001/api/products/1
+Content-Type: application/json
+Accept: application/json
+
+{
+  "id": 1,
+  "name": "Обновлённый товар",
+  "price": 149.99,
+  "stock": 5,
+  "categoryId": 1,
+  "addedDate": "2025-07-18",
+  "imagePath": "images/sample.jpg",
+  "description": "Новое описание продукта"
+}
+
+
+### Удалить продукт по ID
+DELETE http://localhost:8001/api/products/2
+Accept: */*
+
+
+### Загрузить изображение к продукту
+POST http://localhost:8001/api/products/1/image
+Content-Type: multipart/form-data
+
+# Замените путь к изображению ниже
+file=@C:/путь/к/изображению.jpg
+
+
+### Получить изображение по имени файла
+GET http://localhost:8001/api/products/image/sample.jpg
+Accept: image/jpeg

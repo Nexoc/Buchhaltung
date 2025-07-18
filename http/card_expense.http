@@ -1,0 +1,38 @@
+### Получить все расходы по карте
+GET http://localhost:8001/api/expenses/card
+Accept: application/json
+
+
+### Получить конкретную запись по ID
+GET http://localhost:8001/api/expenses/card/1
+Accept: application/json
+
+
+### Создать новую запись о расходе по карте
+POST http://localhost:8001/api/expenses/card
+Content-Type: application/json
+Accept: application/json
+
+{
+  "expenseTime": "2025-07-18T12:00:00",
+  "amount": 123.45,
+  "description": "Оплата офиса"
+}
+
+
+### Обновить запись по ID
+PUT http://localhost:8001/api/expenses/card/1
+Content-Type: application/json
+Accept: application/json
+
+{
+  "id": 1,
+  "expenseTime": "2025-07-18T15:00:00",
+  "amount": 150.00,
+  "description": "Обновлено: покупка канцтоваров"
+}
+
+
+### Удалить запись по ID
+DELETE http://localhost:8001/api/expenses/card/2
+Accept: application/json

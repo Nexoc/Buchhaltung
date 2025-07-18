@@ -1,0 +1,41 @@
+spring:
+  datasource:
+    # ---->>>>>>>>> USE docker-compose <<<<<<<<<<<<-----------
+    #
+    # PostgreSQL database connection settings
+    # url: jdbc:postgresql://db_olga:5433/db_olga    # Docker Compose service name
+    url: jdbc:postgresql://localhost:5433/db_olga    # Localhost for local development
+    username: nexoc                                  # DB username
+    password: '0880'                                # DB password
+    driver-class-name: org.postgresql.Driver         # JDBC driver for PostgreSQL
+
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
+
+  jpa:
+    hibernate:
+      # ddl-auto: create-drop     # Automatically drops and recreates schema on startup (NOT for production)
+      ddl-auto: none  # ❗ Hibernate не будет создавать, обновлять или удалять таблицы
+    show-sql: true              # Show SQL queries in the console (useful for debugging)
+    properties:
+      hibernate:
+        format_sql: true        # Format SQL queries in logs for better readability
+      database: postgresql
+      database-platform: org.hibernate.dialect.PostgreSQLDialect  # Hibernate dialect for PostgreSQL
+
+server:
+  port: 8001  # Application will run on localhost:8001
+
+base:
+  url: "http://localhost:8001"  # Base URL used in your application (can be used in custom properties)
+
+
+logging:
+  level:
+    org.springframework.web: DEBUG     # Show detailed web logs (e.g. requests, controller mapping)
+    org.springdoc: DEBUG               # Show Swagger/OpenAPI-related debug logs
+
+file:
+  upload-dir: ./uploads

@@ -1,0 +1,38 @@
+### Получить все расходы наличными
+GET http://localhost:8001/api/expenses/cash
+Accept: application/json
+
+
+### Получить запись о расходе по ID
+GET http://localhost:8001/api/expenses/cash/1
+Accept: application/json
+
+
+### Создать запись о расходе наличными
+POST http://localhost:8001/api/expenses/cash
+Content-Type: application/json
+Accept: application/json
+
+{
+  "expenseTime": "2025-07-18T16:00:00",
+  "amount": 50.00,
+  "description": "Покупка канцелярии"
+}
+
+
+### Обновить запись о расходе наличными
+PUT http://localhost:8001/api/expenses/cash/1
+Content-Type: application/json
+Accept: application/json
+
+{
+  "id": 1,
+  "expenseTime": "2025-07-18T17:00:00",
+  "amount": 60.00,
+  "description": "Обновлено: покупка ручек"
+}
+
+
+### Удалить запись о расходе наличными
+DELETE http://localhost:8001/api/expenses/cash/2
+Accept: application/json

@@ -1,0 +1,51 @@
+### Получить список всех инструкций
+GET http://localhost:8001/api/instructions
+Accept: application/json
+
+
+### Получить одну инструкцию по ID
+GET http://localhost:8001/api/instructions/1
+Accept: application/json
+
+
+### Создать инструкцию (без файла)
+POST http://localhost:8001/api/instructions
+Content-Type: application/json
+Accept: application/json
+
+{
+  "filename": null,
+  "description": "Инструкция по эксплуатации",
+  "productId": 1
+}
+
+
+### Обновить инструкцию по ID (например, изменить описание)
+PUT http://localhost:8001/api/instructions/1
+Content-Type: application/json
+Accept: application/json
+
+{
+  "id": 1,
+  "filename": "manual-v2.pdf",
+  "description": "Обновлённая инструкция",
+  "productId": 1
+}
+
+
+### Удалить инструкцию по ID
+DELETE http://localhost:8001/api/instructions/1
+Accept: */*
+
+
+### Загрузить файл к инструкции (PDF, JPG, PNG и др.)
+POST http://localhost:8001/api/instructions/1/file
+Content-Type: multipart/form-data
+
+# Замените путь к файлу ниже (поддерживаются PDF, JPG, PNG и др.)
+file=@C:/полный/путь/к/файлу.pdf
+
+
+### Скачать файл инструкции по имени
+GET http://localhost:8001/api/instructions/file/manual-v1.pdf
+Accept: */*

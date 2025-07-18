@@ -1,0 +1,19 @@
+### Ежедневный отчёт о прибыли и убытках
+GET http://localhost:8001/api/reports/daily
+Accept: application/json
+
+### Еженедельный отчёт о прибыли и убытках
+GET http://localhost:8001/api/reports/weekly
+Accept: application/json
+
+### Ежемесячный журнал (P&L) за указанный год
+GET http://localhost:8001/api/reports/monthly?year=2025
+Accept: application/json
+
+### Годовой отчёт о прибыли и убытках
+GET http://localhost:8001/api/reports/yearly
+Accept: application/json
+
+### Сводный отчёт за все годы
+GET http://localhost:8001/api/reports/summary
+Accept: application/json
