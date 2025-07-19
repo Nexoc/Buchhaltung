@@ -14,7 +14,7 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "expenseTime": "2025-07-18T12:00:00",
+  "expenseTime": "2025-07-30T12:00:00",
   "amount": 123.45,
   "description": "Оплата офиса"
 }

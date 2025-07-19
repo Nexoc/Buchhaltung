@@ -1,155 +1,423 @@
 package at.magic.olga.service;
 
-import at.magic.olga.dto.view.AnnualSummaryDto;
-import org.springframework.stereotype.Service;
-import org.thymeleaf.context.Context;
-import org.thymeleaf.spring6.SpringTemplateEngine;
+import at.magic.olga.repositories.SaleRepository;
+import at.magic.olga.repositories.CashExpenseRepository;
+import at.magic.olga.repositories.CardExpenseRepository;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
-/**
- * Service responsible solely for exporting PDF reports.
- */
+import java.io.IOException;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 @Service
 public class ExportService {
 
+    private static final Logger log = LoggerFactory.getLogger(ExportService.class);
+
+    private final SaleRepository saleRepo;
+    private final CashExpenseRepository cashRepo;
+    private final CardExpenseRepository cardRepo;
     private final ReportingService reportingService;
-    private final SpringTemplateEngine templateEngine;
+    private final TemplateEngine thymeleaf;
 
-    public ExportService(ReportingService reportingService,
-                         SpringTemplateEngine templateEngine) {
+    public ExportService(SaleRepository saleRepo,
+                         CashExpenseRepository cashRepo,
+                         CardExpenseRepository cardRepo,
+            ReportingService reportingService,
+            TemplateEngine thymeleaf) {
+        this.saleRepo = saleRepo;
+        this.cashRepo = cashRepo;
+        this.cardRepo = cardRepo;
         this.reportingService = reportingService;
-        this.templateEngine = templateEngine;
+        this.thymeleaf = thymeleaf;
     }
 
-    /**
-     * Export daily profit & loss report as PDF.
-     */
-    public void exportDailyPdf(HttpServletResponse response) throws IOException {
+     // 1) транзакции (продажи + расходы) за указанный год и месяц
+     public void exportRawByMonthPdf(HttpServletResponse response, int year, int month) throws IOException {
+         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy");
+        // после того, как получили три списка:
+         List<Map<String,Object>> sales   = fetchSales(year, month, fmt);
+         List<Map<String,Object>> cashExp = fetchCashExpenses(year, month, fmt);
+         List<Map<String,Object>> cardExp = fetchCardExpenses(year, month, fmt);
+
+        // для каждого списка делаем маппинг в упрощённый формат,
+        // оставляя только timestamp, type, total и comment
+         List<Map<String,Object>> simplifiedSales = sales.stream()
+                 .map(m -> Map.<String,Object>of(
+                         "timestamp", m.get("timestamp"),
+                         "type",      m.get("type"),
+                         "total",     m.get("totalPaid"),
+                         "comment",   m.get("comment")
+                 ))
+                 .collect(Collectors.toList());
+
+         List<Map<String,Object>> simplifiedCash = cashExp.stream()
+                 .map(m -> Map.<String,Object>of(
+                         "timestamp", m.get("timestamp"),
+                         "type",      m.get("type"),
+                         "total",     m.get("amount"),
+                         "comment",   m.get("comment")
+                 ))
+                 .collect(Collectors.toList());
+
+         List<Map<String,Object>> simplifiedCard = cardExp.stream()
+                 .map(m -> Map.<String,Object>of(
+                         "timestamp", m.get("timestamp"),
+                         "type",      m.get("type"),
+                         "total",     m.get("amount"),
+                         "comment",   m.get("comment")
+                 ))
+                 .collect(Collectors.toList());
+
+        // объединяем всё в один список и сортируем по timestamp
+         List<Map<String,Object>> summary = Stream.of(simplifiedSales, simplifiedCash, simplifiedCard)
+                 .flatMap(List::stream)
+                 .sorted(Comparator.comparing(m ->
+                         LocalDateTime.parse((String) m.get("timestamp"), fmt)
+                 ))
+                 .collect(Collectors.toList());
+
+        // передать summary в шаблон
+         renderReport(
+                 response,
+                 "raw_summary",
+                 String.format("Übersicht für %d-%02d", year, month),
+                 List.of("timestamp", "type", "total", "comment"),
+                 summary,
+                 String.format("summary_%d_%02d.pdf", year, month)
+         );
+     }
+
+
+     // 2) транзакции (продажи) за указанный год и месяц
+    public void exportSalesByMonthPdf(HttpServletResponse response, int year, int month) throws IOException {
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy");
+        var sales   = fetchSales(year, month, fmt);
         renderReport(
                 response,
-                "Daily Profit & Loss",
-                List.of("day","salesAmount","cardExpenses","cashExpenses","netProfit"),
-                reportingService.getDailyProfitLoss().stream().map(d -> Map.<String,String>of(
-                        "day", d.getDay().toString(),
-                        "salesAmount", d.getSalesAmount().toString(),
-                        "cardExpenses", d.getCardExpenses().toString(),
-                        "cashExpenses", d.getCashExpenses().toString(),
-                        "netProfit", d.getNetProfit().toString()
-                )).collect(Collectors.toList()),
-                "daily_report.pdf"
+                "report",
+                String.format("Verkaufstransaktionen für %d-%02d", year, month),
+                List.of("timestamp","type","productId","amount","paymentMethod","comment"),
+                sales,
+                String.format("sales_transactions_%d_%02d.pdf", year, month)
+        );
+    }
+
+    // 3) транзакции (продажи) за указанный год и месяц с объединением
+    public void exportSalesDayByMonthPdf(HttpServletResponse response, int year, int month) throws IOException {
+        DateTimeFormatter fullFmt = DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy");
+        DateTimeFormatter dateFmt = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+
+        var sales = fetchSales(year, month, fullFmt);
+
+        var dailyTotals = sales.stream()
+                .collect(Collectors.groupingBy(
+                        s -> ((String) s.get("timestamp")).substring(6), // "HH:mm dd.MM.yyyy" -> "dd.MM.yyyy"
+                        TreeMap::new,
+                        Collectors.summingDouble(s -> ((Number) s.get("totalPaid")).doubleValue())
+                ))
+                .entrySet().stream()
+                .map(entry -> Map.<String, Object>of(
+                        "timestamp", entry.getKey(),                            // только дата с фиктивным временем
+                        "amount",    Math.round(entry.getValue() * 100.0) / 100.0     // сумма продаж за день
+                ))
+                .collect(Collectors.toList());
+
+        renderReport(
+                response,
+                "sales_per_day_monthly",
+                String.format("Tägliche Zusammenfassung der Verkäufe für %d-%02d", year, month),
+                List.of("timestamp", "amount"),
+                dailyTotals,
+                String.format("daily_sales_%d_%02d.pdf", year, month)
         );
     }
 
 
-    /**
-     * Export weekly profit & loss report as PDF.
-     */
-    public void exportWeeklyPdf(HttpServletResponse response) throws IOException {
+    // 4) транзакции (расходы наликом) за указанный год и месяц
+    public void exportCashByMonthPdf(HttpServletResponse response, int year, int month) throws IOException {
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy");
+        var cashExp = fetchCashExpenses(year, month, fmt);
         renderReport(
                 response,
-                "Weekly Profit & Loss",
-                List.of("weekStart","salesAmount","cardExpenses","cashExpenses","netProfit"),
-                reportingService.getWeeklyProfitLoss().stream().map(w -> Map.<String,String>of(
-                        "weekStart", w.getWeekStart().toString(),
-                        "salesAmount", w.getSalesAmount().toString(),
-                        "cardExpenses", w.getCardExpenses().toString(),
-                        "cashExpenses", w.getCashExpenses().toString(),
-                        "netProfit", w.getNetProfit().toString()
-                )).collect(Collectors.toList()),
-                "weekly_report.pdf"
+                "cash-card_report",
+                String.format("Bargeldtransaktionen für %d-%02d", year, month),
+                List.of("timestamp","type","productId","amount","paymentMethod","comment"),
+                cashExp,
+                String.format("cash_transactions_%d_%02d.pdf", year, month)
         );
     }
 
-    /**
-     * Export monthly cash journal for a given year as PDF.
-     */
-    public void exportMonthlyPdf(HttpServletResponse response, Integer year) throws IOException {
+    // 5) транзакции (расходы наликом) за указанный год и месяц с объединением
+    public void exportCashDayByMonthPdf(HttpServletResponse response, int year, int month) throws IOException {
+        DateTimeFormatter fullFmt = DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy");
+        DateTimeFormatter dateFmt = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+
+        var cashExp = fetchCashExpenses(year, month, fullFmt);
+
+        var dailyTotals = cashExp.stream()
+                .collect(Collectors.groupingBy(
+                        s -> ((String) s.get("timestamp")).substring(6), // "HH:mm dd.MM.yyyy" -> "dd.MM.yyyy"
+                        TreeMap::new,
+                        Collectors.summingDouble(s -> ((Number) s.get("amount")).doubleValue())
+                ))
+                .entrySet().stream()
+                .map(entry -> Map.<String, Object>of(
+                        "timestamp", entry.getKey(),  // только дата с фиктивным временем
+                        "amount",    Math.round(entry.getValue() * 100.0) / 100.0            // сумма продаж за день
+                ))
+                .collect(Collectors.toList());
+
         renderReport(
                 response,
-                "Monthly Cash Journal " + year,
-                List.of("id","monthNumber","year","incomeTotal","cardExpensesTotal","cashExpensesTotal","balanceChange","runningTotal"),
-                reportingService.getMonthlyReport(year).stream().map(j -> Map.<String,String>of(
-                        "id", j.getId().toString(),
-                        "monthNumber", j.getMonthNumber().toString(),
-                        "year", j.getYear().toString(),
-                        "incomeTotal", j.getIncomeTotal().toString(),
-                        "cardExpensesTotal", j.getCardExpensesTotal().toString(),
-                        "cashExpensesTotal", j.getCashExpensesTotal().toString(),
-                        "balanceChange", j.getBalanceChange().toString(),
-                        "runningTotal", j.getRunningTotal().toString()
-                )).collect(Collectors.toList()),
-                "monthly_report_" + year + ".pdf"
+                "sales_per_day_monthly",
+                String.format("Tägliche Zusammenfassung der Barzahlungen für %d-%02d", year, month),
+                List.of("timestamp", "amount"),
+                dailyTotals,
+                String.format("daily_cash_%d_%02d.pdf", year, month)
         );
     }
 
-    /**
-     * Export yearly profit & loss report as PDF.
-     */
-    public void exportYearlyPdf(HttpServletResponse response) throws IOException {
+     // 6) транзакции (расходы картой) за указанный год и месяц
+    public void exportCardByMonthPdf(HttpServletResponse response, int year, int month) throws IOException {
+
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy");
+        var cardExp = fetchCardExpenses(year, month, fmt);
         renderReport(
                 response,
-                "Yearly Profit & Loss",
-                List.of("year","salesAmount","cardExpenses","cashExpenses","netProfit"),
-                reportingService.getYearlyProfitLoss().stream().map(y -> Map.<String,String>of(
-                        "year", y.getYear().toString(),
-                        "salesAmount", y.getSalesAmount().toString(),
-                        "cardExpenses", y.getCardExpenses().toString(),
-                        "cashExpenses", y.getCashExpenses().toString(),
-                        "netProfit", y.getNetProfit().toString()
-                )).collect(Collectors.toList()),
-                "yearly_report.pdf"
+                "cash-card_report",
+                String.format("Kartentransaktionen für %d-%02d", year, month),
+                List.of("timestamp","type","productId","amount","paymentMethod","comment"),
+                cardExp,
+                String.format("card_transactions_%d_%02d.pdf", year, month)
         );
     }
 
-    /**
-     * Export aggregate annual summary as PDF.
-     */
-    public void exportSummaryPdf(HttpServletResponse response) throws IOException {
-        AnnualSummaryDto summary = reportingService.getAnnualSummary();
+    // 6) транзакции (расходы картой) за указанный год и месяц с объединением
+    public void exportCardDayByMonthPdf(HttpServletResponse response, int year, int month) throws IOException {
+        DateTimeFormatter fullFmt = DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy");
+        DateTimeFormatter dateFmt = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+
+        var cardExp = fetchCardExpenses(year, month, fullFmt);
+
+        var dailyTotals = cardExp.stream()
+                .collect(Collectors.groupingBy(
+                        s -> ((String) s.get("timestamp")).substring(6), // "HH:mm dd.MM.yyyy" -> "dd.MM.yyyy"
+                        TreeMap::new,
+                        Collectors.summingDouble(s -> ((Number) s.get("amount")).doubleValue())
+                ))
+                .entrySet().stream()
+                .map(entry -> Map.<String, Object>of(
+                        "timestamp", entry.getKey(),  // только дата с фиктивным временем
+                        "amount",    Math.round(entry.getValue() * 100.0) / 100.0            // сумма продаж за день
+                ))
+                .collect(Collectors.toList());
+
         renderReport(
                 response,
-                "Annual Summary",
-                List.of("totalSales","totalCardExpenses","totalCashExpenses","totalNetProfit"),
-                List.of(Map.of(
-                        "totalSales", summary.getTotalSales().toString(),
-                        "totalCardExpenses", summary.getTotalCardExpenses().toString(),
-                        "totalCashExpenses", summary.getTotalCashExpenses().toString(),
-                        "totalNetProfit", summary.getTotalNetProfit().toString()
-                )),
-                "summary_report.pdf"
+                "sales_per_day_monthly",
+                String.format("Tägliche Zusammenfassung der Bargeldtransaktionen für %d-%02d", year, month),
+                List.of("timestamp", "amount"),
+                dailyTotals,
+                String.format("daily_card_%d_%02d.pdf", year, month)
         );
     }
 
+
+    // New export: Kassajournal
+    public void exportKassajournalPdf(HttpServletResponse response, int year, double kassastandStart) throws IOException {
+        List<Map<String, Object>> report = new ArrayList<>();
+        double laufend = kassastandStart;
+
+        for (int month = 1; month <= 12; month++) {
+            final int currentMonth = month;
+
+            double einnahmen = saleRepo.findByYearAndMonth(year, currentMonth).stream()
+                    .mapToDouble(s -> {
+                        if (s.getProduct() != null)
+                            return s.getProduct().getPrice() * s.getQuantity();
+                        return 0.0;
+                    }).sum();
+
+            double ec = cardRepo.findAll().stream()
+                    .filter(e -> e.getExpenseTime().getYear() == year && e.getExpenseTime().getMonthValue() == currentMonth)
+                    .mapToDouble(e -> e.getAmount()).sum();
+
+            double ausgaben = cashRepo.findAll().stream()
+                    .filter(e -> e.getExpenseTime().getYear() == year && e.getExpenseTime().getMonthValue() == currentMonth)
+                    .mapToDouble(e -> e.getAmount()).sum();
+
+            double bewegung = einnahmen - ec - ausgaben;
+            laufend += bewegung;
+
+            Map<String, Object> row = new HashMap<>();
+            row.put("monat", monthName(month));
+            row.put("einnahmen", einnahmen);
+            row.put("ec", ec);
+            row.put("ausgaben", ausgaben);
+            row.put("bewegung", bewegung);
+            row.put("laufend", laufend);
+            report.add(row);
+        }
+
+        renderReport(
+                response,
+                "kassajournal",
+                String.format("Kassajournal %d", year),
+                List.of("monat", "einnahmen", "ec", "ausgaben", "bewegung", "laufend"),
+                report,
+                String.format("kassajournal_%d.pdf", year)
+        );
+    }
+
+    private String monthName(int month) {
+        return switch (month) {
+            case 1 -> "Jänner";
+            case 2 -> "Februar";
+            case 3 -> "März";
+            case 4 -> "April";
+            case 5 -> "Mai";
+            case 6 -> "Juni";
+            case 7 -> "Juli";
+            case 8 -> "August";
+            case 9 -> "September";
+            case 10 -> "Oktober";
+            case 11 -> "November";
+            case 12 -> "Dezember";
+            default -> "";
+        };
+    }
+
+
+    /** Сбор всех продаж за месяц в виде списка Map */
+    private List<Map<String,Object>> fetchSales(int year, int month, DateTimeFormatter fmt) {
+        var sales = saleRepo.findAll().stream()
+                .filter(s -> {
+                    var t = s.getSaleTime();
+                    return t.getYear() == year && t.getMonthValue() == month;
+                })
+                .map(s -> {
+                    // имя товара или "<без товара>"
+                    String productName = s.getProduct() != null
+                            ? s.getProduct().getName()
+                            : "<без товара>";
+
+                    // цена за единицу или 0.0, если товара нет
+                    Double unitPrice = s.getProduct() != null
+                            ? s.getProduct().getPrice()
+                            : 0.0;
+
+                    // итоговая сумма — цена * количество
+                    Double totalPaid = unitPrice * s.getQuantity();
+
+                    return Map.<String,Object>of(
+                            "timestamp",     s.getSaleTime().format(fmt),
+                            "type",          "SALE",
+                            "productName",   productName,
+                            "unitPrice",     unitPrice,      // цена за единицу
+                            "quantity",      s.getQuantity(),
+                            "totalPaid",     totalPaid,      // итоговая сумма
+                            "paymentMethod", s.getPaymentMethod(),
+                            "comment",       s.getComment()
+                    );
+                })
+                .collect(Collectors.toList());
+
+        log.info("Found {} sales records", sales.size());
+        return sales;
+    }
+
+
+    /** Сбор всех cash‑расходов за месяц */
+    private List<Map<String,Object>> fetchCashExpenses(int year, int month, DateTimeFormatter fmt) {
+        var list = cashRepo.findAll().stream()
+                .filter(e -> {
+                    var t = e.getExpenseTime();
+                    return t.getYear() == year && t.getMonthValue() == month;
+                })
+                .map(e -> {
+                    Map<String,Object> m = new HashMap<>();
+                    m.put("timestamp",     e.getExpenseTime().format(fmt));
+                    m.put("type",          "CASH_EXPENSE");
+                    m.put("amount",        e.getAmount());
+                    m.put("comment",       e.getDescription());
+                    return m;
+                })
+                .collect(Collectors.toList());
+        log.info("Found {} cash‑expense records", list.size());
+        return list;
+    }
+
+    /** Сбор всех card‑расходов за месяц */
+    private List<Map<String,Object>> fetchCardExpenses(int year, int month, DateTimeFormatter fmt) {
+        var list = cardRepo.findAll().stream()
+                .filter(e -> {
+                    var t = e.getExpenseTime();
+                    return t.getYear() == year && t.getMonthValue() == month;
+                })
+                .map(e -> {
+                    Map<String,Object> m = new HashMap<>();
+                    m.put("timestamp",     e.getExpenseTime().format(fmt));
+                    m.put("type",          "CARD_EXPENSE");
+                    m.put("amount",        e.getAmount());
+                    m.put("comment",       e.getDescription());
+                    return m;
+                })
+                .collect(Collectors.toList());
+        log.info("Found {} card‑expense records", list.size());
+        return list;
+    }
+
+
     /**
-     * General-purpose PDF rendering.
+     * HTML → PDF через Thymeleaf + OpenHTMLToPDF.
      */
     private void renderReport(HttpServletResponse response,
+                              String templateName,
                               String title,
                               List<String> columns,
-                              List<Map<String,String>> rows,
+                              List<? extends Map<String, ?>> rows,
                               String filename) throws IOException {
-        response.setContentType("application/pdf");
-        response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
+        // Логируем ключевую информацию
+        log.debug("renderReport: title='{}', filename='{}', columns={}, rowsCount={}", templateName,
+                title, filename, columns, rows.size());
+
+        // Логируем сами столбцы
+        log.debug("renderReport: columns details -> {}", columns);
+
 
         Context ctx = new Context();
         ctx.setVariable("title", title);
         ctx.setVariable("columns", columns);
         ctx.setVariable("rows", rows);
-        String html = templateEngine.process("report", ctx);
 
-        try (OutputStream os = response.getOutputStream()) {
-            PdfRendererBuilder builder = new PdfRendererBuilder();
-            builder.withHtmlContent(html, null)
-                    .toStream(os)
-                    .run();
-        } catch (Exception e) {
-            throw new IOException("PDF generation failed", e);
-        }
+        // вместо жёстко "report" теперь используем templateName
+        String html = thymeleaf.process(templateName, ctx);
+        log.trace("renderReport: generated html: {}", html);
+
+        response.setContentType("application/pdf");
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
+
+        PdfRendererBuilder builder = new PdfRendererBuilder();
+
+        String baseUri = getClass()
+                .getResource("/static/")
+                .toExternalForm();  // например "file:/.../BOOT-INF/classes/static/"
+
+
+        builder.withHtmlContent(html, baseUri);
+        builder.toStream(response.getOutputStream());
+        builder.run();
+        log.info("renderReport: PDF sent");
     }
 }

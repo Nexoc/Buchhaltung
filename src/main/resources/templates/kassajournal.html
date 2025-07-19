@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title th:text="${title}">Kassajournal</title>
+  <style>
+    body { font-family: sans-serif; margin: 1em; }
+    h2 { margin-bottom: .3em; }
+    h4 { margin-top: 0; margin-bottom: 1em; font-weight: normal; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #888; padding: 6px; }
+    th { background: #eee; text-align: center; }
+    td { text-align: right; }
+    td:first-child, th:first-child { text-align: left; }
+    tbody tr:nth-child(odd) { background: #f9f9f9; }
+
+    @font-face {
+      font-family: 'DejaVuSans';
+      src: url('fonts/DejaVuSans.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+    body {
+      font-family: 'DejaVuSans', sans-serif;
+    }
+  </style>
+</head>
+<body>
+<h2 th:text="${title}">Kassajournal</h2>
+<h4 th:text="'Kassastand: ' + ${#numbers.formatDecimal(rows.get(0).get('laufend') - rows.get(0).get('bewegung'), 1, 'COMMA', 2, 'POINT')} + ' €'">
+  Kassastand per 31.12.2025: ...
+</h4>
+
+<table>
+  <thead>
+  <tr>
+    <th>Monat</th>
+    <th style="background: #ffffcc;">Einnahmen</th>
+    <th style="background: #ffffcc;">EC</th>
+    <th style="background: #ffffcc;">Ausgaben</th>
+    <th style="background: #ffffcc;">Bewegung</th>
+    <th style="background: #ffffcc;">Laufend</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="row : ${rows}">
+    <td th:text="${row.get('monat')}">Jänner</td>
+    <td th:text="${#numbers.formatDecimal(row.get('einnahmen'), 1, 'COMMA', 2, 'POINT')}">0,00</td>
+    <td th:text="${#numbers.formatDecimal(row.get('ec'), 1, 'COMMA', 2, 'POINT')}">0,00</td>
+    <td th:text="${#numbers.formatDecimal(row.get('ausgaben'), 1, 'COMMA', 2, 'POINT')}">0,00</td>
+    <td th:text="${#numbers.formatDecimal(row.get('bewegung'), 1, 'COMMA', 2, 'POINT')}">0,00</td>
+    <td th:text="${#numbers.formatDecimal(row.get('laufend'), 1, 'COMMA', 2, 'POINT')}">0,00</td>
+  </tr>
+  </tbody>
+</table>
+</body>
+</html>

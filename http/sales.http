@@ -32,7 +32,7 @@ Accept: application/json
   "quantity": 2,
   "paymentMethod": "CARD",
   "comment": "Изменено количество",
-  "saleTime": "2025-07-18T17:00:00"
+  "saleTime": "2025-07-21T17:00:00"
 }
 
 

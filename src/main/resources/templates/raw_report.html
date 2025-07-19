@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title th:text="${title}">Report</title>
+  <style>
+    body { font-family: sans-serif; margin: 1em; }
+    h2 { margin-bottom: .5em; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #888; padding: 6px; }
+    th { background: #eee; }
+    tbody tr:nth-child(odd) { background: #f9f9f9; }
+
+    @font-face {
+      font-family: 'DejaVuSans';
+      /* теперь это относительный путь от baseUri */
+      src: url('fonts/DejaVuSans.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+    body {
+      font-family: 'DejaVuSans', sans-serif;
+    }
+  </style>
+</head>
+<body>
+<h2 th:text="${title}">Report Title</h2>
+
+<table>
+  <thead>
+  <tr>
+    <th th:each="col : ${columns}" th:text="${col}">Column</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="row : ${rows}">
+    <!-- Динамически выводим все колонки -->
+    <td th:each="col : ${columns}" th:text="${row.get(col)}">Value</td>
+  </tr>
+  <tr th:if="${#lists.isEmpty(rows)}">
+    <td th:colspan="${columns.size()}"
+        style="text-align:center; font-style:italic">
+      No data available
+    </td>
+  </tr>
+  </tbody>
+</table>
+</body>
+</html>

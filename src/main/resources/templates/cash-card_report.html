@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title th:text="${title}">Cash Card Report</title>
+  <style>
+    body { font-family: sans-serif; margin: 1em; }
+    h2 { margin-bottom: .5em; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #888; padding: 6px; }
+    th { background: #eee; }
+    tbody tr:nth-child(odd) { background: #f9f9f9; }
+
+    @font-face {
+      font-family: 'DejaVuSans';
+      /* теперь это относительный путь от baseUri */
+      src: url('fonts/DejaVuSans.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+    body {
+      font-family: 'DejaVuSans', sans-serif;
+    }
+  </style>
+</head>
+<body>
+<h1 th:text="${title}">Transactions</h1>
+
+<table>
+  <thead>
+  <tr>
+    <th>Datum</th>
+    <th>Typ</th>
+    <th>Summe</th>
+    <th>Kommentar</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="row : ${rows}">
+    <td th:text="${row.timestamp}">–</td>
+    <td th:text="${row.type}">–</td>
+    <td th:text="${row.amount}">–</td>
+    <td th:text="${row.comment}">–</td>
+  </tr>
+  </tbody>
+</table>
+</body>
+</html>

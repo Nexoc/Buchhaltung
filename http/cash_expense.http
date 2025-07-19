@@ -14,8 +14,8 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "expenseTime": "2025-07-18T16:00:00",
-  "amount": 50.00,
+  "expenseTime": "2025-07-17T16:00:00",
+  "amount": 89.00,
   "description": "Покупка канцелярии"
 }
 

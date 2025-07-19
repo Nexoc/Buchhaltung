@@ -10,27 +10,49 @@
         th, td { border: 1px solid #888; padding: 6px; }
         th { background: #eee; }
         tbody tr:nth-child(odd) { background: #f9f9f9; }
+
+        @font-face {
+          font-family: 'DejaVuSans';
+          /* теперь это относительный путь от baseUri */
+          src: url('fonts/DejaVuSans.ttf') format('truetype');
+          font-weight: normal;
+          font-style: normal;
+        }
+        body {
+          font-family: 'DejaVuSans', sans-serif;
+        }
     </style>
 </head>
 <body>
 <h2 th:text="${title}">Report Title</h2>
+
+
 <table>
     <thead>
     <tr>
-        <th th:each="col : ${columns}" th:text="${col}">Column</th>
+        <th>Zeitpunkt</th>
+        <th>Typ</th>
+        <th>Produktname</th>
+        <th>Stückpreis</th>
+        <th>Menge</th>
+        <th>Gesamtbetrag</th>
+        <th>Zahlungsmethode</th>
+        <th>Kommentar</th>
     </tr>
     </thead>
     <tbody>
     <tr th:each="row : ${rows}">
-        <!-- вместо row[col] явно вызываем row.get(col) -->
-        <td th:each="col : ${columns}" th:text="${row.get(col)}">Value</td>
-    </tr>
-    <tr th:if="${#lists.isEmpty(rows)}">
-        <td th:colspan="${columns.size()}" style="text-align:center;font-style:italic">
-            No data available
-        </td>
+        <td th:text="${row.timestamp}">–</td>
+        <td th:text="${row.type}">–</td>
+        <td th:text="${row.productName}">–</td>
+        <td th:text="${row.unitPrice}">–</td>
+        <td th:text="${row.quantity}">–</td>
+        <td th:text="${row.totalPaid}">–</td>
+        <td th:text="${row.paymentMethod}">–</td>
+        <td th:text="${row.comment}">–</td>
     </tr>
     </tbody>
 </table>
+
 </body>
 </html>

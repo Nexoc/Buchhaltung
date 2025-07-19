@@ -17,7 +17,7 @@ spring:
   jpa:
     hibernate:
       # ddl-auto: create-drop     # Automatically drops and recreates schema on startup (NOT for production)
-      ddl-auto: none  # ❗ Hibernate не будет создавать, обновлять или удалять таблицы
+      ddl-auto: none  # Hibernate не будет создавать, обновлять или удалять таблицы
     show-sql: true              # Show SQL queries in the console (useful for debugging)
     properties:
       hibernate:
@@ -34,8 +34,12 @@ base:
 
 logging:
   level:
-    org.springframework.web: DEBUG     # Show detailed web logs (e.g. requests, controller mapping)
-    org.springdoc: DEBUG               # Show Swagger/OpenAPI-related debug logs
+    org.springframework.web: DEBUG     # подробные веб‑логи (запросы, маппинг контроллеров)
+    org.springdoc:         DEBUG       # Swagger/OpenAPI‑логи
+    at.magic.olga:         DEBUG        # по умолчанию ваше приложение на INFO
+    at.magic.olga.service.ExportService: DEBUG   # включить DEBUG‑логи в ExportService
+
+
 
 file:
   upload-dir: ./uploads

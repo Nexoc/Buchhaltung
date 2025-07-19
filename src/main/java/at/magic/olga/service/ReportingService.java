@@ -1,111 +1,82 @@
 package at.magic.olga.service;
 
+import at.magic.olga.models.view.DailyProfitLoss;
+import at.magic.olga.models.view.WeeklyProfitLoss;
 import at.magic.olga.models.view.YearCashJournal;
-import at.magic.olga.repositories.view.CashJournalRepository;
+import at.magic.olga.models.view.YearlyProfitLoss;
+import at.magic.olga.models.view.AnnualSummary;
 import at.magic.olga.repositories.view.DailyProfitLossRepository;
+import at.magic.olga.repositories.view.WeeklyProfitLossRepository;
+import at.magic.olga.repositories.view.CashJournalRepository;
+import at.magic.olga.repositories.view.YearlyProfitLossRepository;
+import at.magic.olga.repositories.view.AnnualSummaryRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import at.magic.olga.dto.view.DailyProfitLossDto;
-import at.magic.olga.dto.view.CashJournalDto;
-import at.magic.olga.dto.view.WeeklyProfitLossDto;
-import at.magic.olga.dto.view.YearlyProfitLossDto;
-import at.magic.olga.dto.view.AnnualSummaryDto;
-import at.magic.olga.mappers.view.DailyProfitLossMapper;
-import at.magic.olga.mappers.view.CashJournalMapper;
-import at.magic.olga.mappers.view.WeeklyProfitLossMapper;
-import at.magic.olga.mappers.view.YearlyProfitLossMapper;
-import at.magic.olga.mappers.view.AnnualSummaryMapper;
-
-import at.magic.olga.models.view.AnnualSummary;
-
-import at.magic.olga.repositories.view.WeeklyProfitLossRepository;
-import at.magic.olga.repositories.view.YearlyProfitLossRepository;
-import at.magic.olga.repositories.view.AnnualSummaryRepository;
-
-import java.util.stream.Collectors;
-
 @Service
 public class ReportingService {
 
-    private final DailyProfitLossRepository dailyRepo;
-    private final CashJournalRepository journalRepo;
-    private final WeeklyProfitLossRepository weeklyRepo;
-    private final YearlyProfitLossRepository yearlyRepo;
-    private final AnnualSummaryRepository annualRepo;
+    private final DailyProfitLossRepository    dailyRepo;
+    private final WeeklyProfitLossRepository   weeklyRepo;
+    private final CashJournalRepository        journalRepo;
+    private final YearlyProfitLossRepository   yearlyRepo;
+    private final AnnualSummaryRepository      summaryRepo;
 
-    private final DailyProfitLossMapper dailyMapper;
-    private final CashJournalMapper monthlyMapper;
-    private final WeeklyProfitLossMapper weeklyMapper;
-    private final YearlyProfitLossMapper yearlyMapper;
-    private final AnnualSummaryMapper annualMapper;
-
-    public ReportingService(
-            DailyProfitLossRepository dailyRepo,
-            CashJournalRepository journalRepo,
-            WeeklyProfitLossRepository weeklyRepo,
-            YearlyProfitLossRepository yearlyRepo,
-            AnnualSummaryRepository annualRepo,
-            DailyProfitLossMapper dailyMapper,
-            CashJournalMapper monthlyMapper,
-            WeeklyProfitLossMapper weeklyMapper,
-            YearlyProfitLossMapper yearlyMapper,
-            AnnualSummaryMapper annualMapper) {
-        this.dailyRepo = dailyRepo;
+    public ReportingService(DailyProfitLossRepository dailyRepo,
+                            WeeklyProfitLossRepository weeklyRepo,
+                            CashJournalRepository journalRepo,
+                            YearlyProfitLossRepository yearlyRepo,
+                            AnnualSummaryRepository summaryRepo) {
+        this.dailyRepo   = dailyRepo;
+        this.weeklyRepo  = weeklyRepo;
         this.journalRepo = journalRepo;
-        this.weeklyRepo = weeklyRepo;
-        this.yearlyRepo = yearlyRepo;
-        this.annualRepo = annualRepo;
-        this.dailyMapper = dailyMapper;
-        this.monthlyMapper = monthlyMapper;
-        this.weeklyMapper = weeklyMapper;
-        this.yearlyMapper = yearlyMapper;
-        this.annualMapper = annualMapper;
+        this.yearlyRepo  = yearlyRepo;
+        this.summaryRepo = summaryRepo;
     }
 
     /**
-     * Get profit and loss for each day.
+     * Все записи P&L по дням.
      */
-    public List<DailyProfitLossDto> getDailyProfitLoss() {
-        return dailyRepo.findAll().stream()
-                .map(dailyMapper::toDto)
-                .collect(Collectors.toList());
+    public List<DailyProfitLoss> getDailyProfitLoss() {
+        return dailyRepo.findAll();
     }
 
     /**
-     * Get profit and loss for each week.
+     * Все записи P&L по неделям.
      */
-    public List<WeeklyProfitLossDto> getWeeklyProfitLoss() {
-        return weeklyRepo.findAll().stream()
-                .map(weeklyMapper::toDto)
-                .collect(Collectors.toList());
+    public List<WeeklyProfitLoss> getWeeklyProfitLoss() {
+        return weeklyRepo.findAll();
     }
 
     /**
-     * Get monthly cash journal entries for a specific year.
+     * P&L по дням внутри указанного года и месяца.
      */
-    public List<CashJournalDto> getMonthlyReport(Integer year) {
-        List<YearCashJournal> list = journalRepo.findByYear(year);
-        return monthlyMapper.toDtoList(list);
+    public List<DailyProfitLoss> getDailyProfitLossByMonth(int year, int month) {
+        return dailyRepo.findByYearAndMonth(year, month);
     }
 
     /**
-     * Get profit and loss for each year.
+     * Ежемесячный журнал (P&L) за указанный год.
      */
-    public List<YearlyProfitLossDto> getYearlyProfitLoss() {
-        return yearlyRepo.findAll().stream()
-                .map(yearlyMapper::toDto)
-                .collect(Collectors.toList());
+    public List<YearCashJournal> getMonthlyReport(int year) {
+        return journalRepo.findByYear(year);
     }
 
     /**
-     * Get aggregated summary across all years (single record).
+     * P&L по годам.
      */
-    public AnnualSummaryDto getAnnualSummary() {
-        AnnualSummary entity = annualRepo.findAll().stream().findFirst().orElse(null);
-        return annualMapper.toDto(entity);
+    public List<YearlyProfitLoss> getYearlyProfitLoss() {
+        return yearlyRepo.findAll();
     }
 
-    
+    /**
+     * Сводный агрегированный отчёт за все годы.
+     */
+    public AnnualSummary getAnnualSummary() {
+        return summaryRepo.findFirst();
+    }
+
+
+
 }

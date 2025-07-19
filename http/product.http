@@ -16,7 +16,7 @@ Accept: application/json
 {
   "name": "Пример товара",
   "price": 199.99,
-  "stock": 10,
+  "stock": 10000,
   "categoryId": 1,
   "addedDate": "2025-07-18",
   "imagePath": null,
@@ -34,7 +34,7 @@ Accept: application/json
   "id": 1,
   "name": "Обновлённый товар",
   "price": 149.99,
-  "stock": 5,
+  "stock": 50000,
   "categoryId": 1,
   "addedDate": "2025-07-18",
   "imagePath": "images/sample.jpg",
