@@ -10,6 +10,7 @@ services:
     volumes:
       - db_data_1:/var/lib/postgresql/data     # Persist database data between container restarts
       - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql   # ← монтируем ваш файл здесь
+      - ./backups:/backups  # ← папка на хосте для бэкапов
     environment:
       POSTGRES_USER: nexoc                     # Username for the PostgreSQL database
       POSTGRES_PASSWORD: '0880'                  # Password for the database user
