@@ -1,45 +1,43 @@
 spring:
   datasource:
-    # ---->>>>>>>>> USE docker-compose <<<<<<<<<<<<-----------
-    #
-    # PostgreSQL database connection settings
-    # url: jdbc:postgresql://db_olga:5432/db_olga    # Docker Compose service name
-    url: jdbc:postgresql://localhost:5433/db_olga    # Localhost for local development
-    username: nexoc                                  # DB username
-    password: '0880'                                # DB password
-    driver-class-name: org.postgresql.Driver         # JDBC driver for PostgreSQL
+    url: jdbc:postgresql://localhost:${POSTGRES_PORT:5433}/${POSTGRES_DB:db_olga}
+    username: ${POSTGRES_USER:nexoc}
+    password: ${POSTGRES_PASSWORD:0880}
+    driver-class-name: org.postgresql.Driver
 
   sql:
     init:
-      mode: always
+      mode: never # always
       schema-locations: classpath:schema.sql
 
   jpa:
     hibernate:
-      # ddl-auto: create-drop     # Automatically drops and recreates schema on startup (NOT for production)
-      ddl-auto: none  # Hibernate не будет создавать, обновлять или удалять таблицы
-    show-sql: true              # Show SQL queries in the console (useful for debugging)
+      ddl-auto: none
+    show-sql: true
     properties:
       hibernate:
-        format_sql: true        # Format SQL queries in logs for better readability
+        format_sql: true
       database: postgresql
-      database-platform: org.hibernate.dialect.PostgreSQLDialect  # Hibernate dialect for PostgreSQL
+      database-platform: org.hibernate.dialect.PostgreSQLDialect
 
 server:
-  port: 8001  # Application will run on localhost:8001
+  port: 8001
 
 base:
-  url: "http://localhost:8001"  # Base URL used in your application (can be used in custom properties)
+  url: "http://localhost:8001"
 
+db:
+  container-name: ${POSTGRES_CONTAINER_NAME:db_olga}
+  name: ${POSTGRES_DB:db_olga}
+  user: ${POSTGRES_USER:nexoc}
+  password: ${POSTGRES_PASSWORD:0880}
+
+file:
+  upload-dir: ${UPLOAD_DIR:./uploads}
 
 logging:
   level:
-    org.springframework.web: DEBUG     # подробные веб‑логи (запросы, маппинг контроллеров)
-    org.springdoc:         DEBUG       # Swagger/OpenAPI‑логи
-    at.magic.olga:         DEBUG        # по умолчанию ваше приложение на INFO
-    at.magic.olga.service.ExportService: DEBUG   # включить DEBUG‑логи в ExportService
-
-
-
-file:
-  upload-dir: ./uploads
+    org.springframework.web: DEBUG
+    org.springdoc: DEBUG
+    at.magic.olga: DEBUG
+    at.magic.olga.service.ExportService: DEBUG

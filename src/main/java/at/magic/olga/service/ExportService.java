@@ -348,7 +348,7 @@ public class ExportService {
                 .map(e -> {
                     Map<String,Object> m = new HashMap<>();
                     m.put("timestamp",     e.getExpenseTime().format(fmt));
-                    m.put("type",          "CASH_EXPENSE");
+                    m.put("type",          "Kassa");
                     m.put("amount",        e.getAmount());
                     m.put("comment",       e.getDescription());
                     return m;
@@ -368,7 +368,7 @@ public class ExportService {
                 .map(e -> {
                     Map<String,Object> m = new HashMap<>();
                     m.put("timestamp",     e.getExpenseTime().format(fmt));
-                    m.put("type",          "CARD_EXPENSE");
+                    m.put("type",          "EC");
                     m.put("amount",        e.getAmount());
                     m.put("comment",       e.getDescription());
                     return m;
