@@ -42,5 +42,7 @@ logging:
     at.magic.olga: DEBUG
     at.magic.olga.service.ExportService: DEBUG
 
+app:
   cors:
-    origin: ${FRONTEND_URL}
+    origin: "http://localhost:8080"
+

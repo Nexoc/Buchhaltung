@@ -1,5 +1,6 @@
 package at.magic.olga.config;
 
+import jakarta.annotation.PostConstruct;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,11 @@ public class CorsConfig {
 
     @Autowired
     private CorsProperties corsProperties;
+
+    @PostConstruct
+    public void debugCors() {
+        System.out.println("🔧 CORS origin from properties: " + corsProperties.getOrigin());
+    }
 
     @Bean
     public WebMvcConfigurer corsConfigurer() {
