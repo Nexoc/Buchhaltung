@@ -17,3 +17,5 @@ spring-devtools.properties
 
 # IDE-specific
 .vscode/
+/src/main/resources/static/fonts/dejavu-fonts-ttf-2.37/
+
