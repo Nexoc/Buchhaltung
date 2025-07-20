@@ -41,3 +41,6 @@ logging:
     org.springdoc: DEBUG
     at.magic.olga: DEBUG
     at.magic.olga.service.ExportService: DEBUG
+
+  cors:
+    origin: ${FRONTEND_URL}
