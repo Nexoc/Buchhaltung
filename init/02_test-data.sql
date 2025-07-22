@@ -1,17 +1,4 @@
 INSERT INTO categories (name, description) VALUES
-('Haushalt', 'Produkte für den täglichen Gebrauch zu Hause'),
-('Elektronik', 'Elektronische Geräte und Zubehör'),
-('Lebensmittel', 'Frische und verpackte Nahrungsmittel'),
-('Kleidung', 'Bekleidung für Männer, Frauen und Kinder'),
-('Bücher', 'Romane, Fachliteratur und Lehrbücher'),
-('Sport', 'Ausrüstung und Bekleidung für Sportarten'),
-('Bürobedarf', 'Artikel für Schule und Büro'),
-('Spielzeug', 'Spielwaren für Kinder jeden Alters'),
-('Möbel', 'Wohn- und Büromöbel'),
-('Gesundheit', 'Gesundheitsprodukte und Pflegeartikel');
-
-
-INSERT INTO categories (name, description) VALUES
 ('Scherzartikel', 'Produkte für den täglichen Gebrauch zu Hause'),
 ('Literatur, VHS und DVD', 'Elektronische Geräte und Zubehör'),
 ('Karten', 'Frische und verpackte Nahrungsmittel'),
@@ -21,6 +8,19 @@ INSERT INTO categories (name, description) VALUES
 ('Grimas Schminke', 'Artikel für Schule und Büro'),
 ('Close Up', 'Spielwaren für Kinder jeden Alters'),
 ('Bühne', 'Wohn- und Büromöbel');
+
+INSERT INTO products (name, price, stock, category_id, added_date, image_path, description) VALUES
+('Produkt 1', 10.99, 100, 1, '2025-07-18', NULL, 'Beschreibung 1'),
+('Produkt 2', 12.49, 80, 2, '2025-07-18', NULL, 'Beschreibung 2'),
+('Produkt 3', 15.00, 60, 3, '2025-07-18', NULL, 'Beschreibung 3'),
+('Produkt 4', 18.75, 40, 4, '2025-07-18', NULL, 'Beschreibung 4'),
+('Produkt 5', 20.99, 30, 5, '2025-07-18', NULL, 'Beschreibung 5'),
+('Produkt 6', 9.95, 120, 6, '2025-07-18', NULL, 'Beschreibung 6'),
+('Produkt 7', 5.50, 300, 7, '2025-07-18', NULL, 'Beschreibung 7'),
+('Produkt 8', 13.30, 50, 8, '2025-07-18', NULL, 'Beschreibung 8'),
+('Produkt 9', 22.99, 25, 9, '2025-07-18', NULL, 'Beschreibung 9'),
+('Produkt 10', 7.89, 200, 9, '2025-07-18', NULL, 'Beschreibung 10');
+
 
 
 INSERT INTO sales (product_id, sale_time, quantity, payment_method, comment) VALUES
