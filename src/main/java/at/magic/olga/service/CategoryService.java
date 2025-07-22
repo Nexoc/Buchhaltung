@@ -72,7 +72,6 @@ public class CategoryService {
     }
 
 
-
     @Transactional
     public Category updateImage(Integer id, MultipartFile image) throws IOException {
         Category category = findById(id);
