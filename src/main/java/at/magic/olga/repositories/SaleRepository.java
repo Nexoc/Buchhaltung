@@ -16,4 +16,6 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
     @Query("select s from Sale s where year(s.saleTime)=?1")
     List<Sale> findByYear(int year);
 
+    List<Sale> findByProductId(Integer productId);
+
 }

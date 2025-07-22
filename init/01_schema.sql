@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS card_expenses (
 -- ******************************
 CREATE TABLE IF NOT EXISTS cash_expenses (
   id SERIAL PRIMARY KEY,                                  -- Unique identifier for each cash transaction
-  expense_time TIMESTAMP WITH TIME ZONE NOT NULL,          -- Timestamp when the cash movement occurred (mandatory)
+  expense_time TIMESTAMP WITH TIME ZONE NOT NULL,         -- Timestamp when the cash movement occurred (mandatory)
   amount NUMERIC(15,2),                                   -- Amount of cash movement (precision for currency)
   description VARCHAR(255)                                -- Brief description or note
 );
@@ -31,10 +31,12 @@ CREATE TABLE IF NOT EXISTS cash_expenses (
 -- Represents product categories
 -- ******************************
 CREATE TABLE IF NOT EXISTS categories (
-  id SERIAL PRIMARY KEY,                                  -- Unique category identifier
-  name VARCHAR(255),                                      -- Category name
-  description VARCHAR(255)                                -- Category description
+  id SERIAL PRIMARY KEY,                                 -- Unique category identifier
+  name VARCHAR(255),                                     -- Category name
+  description VARCHAR(255),                              -- Category description
+  image_path VARCHAR(255)                                -- Path to category image (optional)
 );
+
 
 -- ******************************
 -- Table: products

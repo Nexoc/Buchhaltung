@@ -102,7 +102,7 @@ public class ProductController {
             return ResponseEntity.notFound().build();
         }
 
-        String relativePath = fileService.store(file, "images");
+        String relativePath = fileService.store(file, "images/products");
 
         ProductDto dto = productMapper.toDto(product);
         dto.setImagePath(relativePath);
@@ -118,7 +118,7 @@ public class ProductController {
      */
     @GetMapping("/image/{filename:.+}")
     public ResponseEntity<Resource> serveImage(@PathVariable String filename) throws IOException {
-        Resource resource = fileService.load("images/" + filename);
+        Resource resource = fileService.load("images/products/" + filename);
         String contentType = Files.probeContentType(resource.getFile().toPath());
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType != null ? contentType : "application/octet-stream"))

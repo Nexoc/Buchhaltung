@@ -15,4 +15,7 @@ public class CategoryDto {
 
     @Size(max = 255, message = "Description must be at most 255 characters")
     private String description;
+
+    private String imagePath;
+
 }

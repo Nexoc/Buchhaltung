@@ -18,6 +18,7 @@ public class CategoryMapper {
         dto.setId(category.getId());
         dto.setName(category.getName());
         dto.setDescription(category.getDescription());
+        dto.setImagePath(category.getImagePath());
         return dto;
     }
 
@@ -29,6 +30,7 @@ public class CategoryMapper {
         category.setId(dto.getId());
         category.setName(dto.getName());
         category.setDescription(dto.getDescription());
+        category.setImagePath(dto.getImagePath());
         return category;
     }
 

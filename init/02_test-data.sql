@@ -11,17 +11,16 @@ INSERT INTO categories (name, description) VALUES
 ('Gesundheit', 'Gesundheitsprodukte und Pflegeartikel');
 
 
-INSERT INTO products (name, price, stock, category_id, added_date, image_path, description) VALUES
-('Kaffeemaschine', 65.77, 110, 8, '2025-07-14', '/images/product_1.png', 'Energiesparend und benutzerfreundlich.'),
-('Laptop', 194.66, 49, 3, '2022-09-15', '/images/product_2.png', 'Robust und langlebig, ideal für zu Hause oder das Büro.'),
-('Schreibtisch', 175.4, 200, 9, '2022-02-19', '/images/product_3.png', 'Empfohlen von Experten in ganz Deutschland.'),
-('Stuhl', 39.04, 49, 3, '2022-07-12', '/images/product_4.png', 'Besonders beliebt wegen seiner Vielseitigkeit.'),
-('Buch', 184.51, 39, 6, '2022-10-24', '/images/product_5.png', 'Ein hochwertiges Produkt für den täglichen Gebrauch.'),
-('Taschenlampe', 31.25, 240, 5, '2024-03-17', '/images/product_6.png', 'Ein hochwertiges Produkt für den täglichen Gebrauch.'),
-('Handy', 55.77, 370, 2, '2025-01-26', '/images/product_7.png', 'Ein Muss für jeden Haushalt.'),
-('Kopfhörer', 165.04, 490, 9, '2024-11-05', '/images/product_8.png', 'Modernes Design trifft auf zuverlässige Funktion.'),
-('Zahnbürste', 135.35, 360, 3, '2024-01-25', '/images/product_9.png', 'Besonders beliebt wegen seiner Vielseitigkeit.'),
-('Fernseher', 175.76, 280, 4, '2022-07-12', '/images/product_10.png', 'Empfohlen von Experten in ganz Deutschland.');
+INSERT INTO categories (name, description) VALUES
+('Scherzartikel', 'Produkte für den täglichen Gebrauch zu Hause'),
+('Literatur, VHS und DVD', 'Elektronische Geräte und Zubehör'),
+('Karten', 'Frische und verpackte Nahrungsmittel'),
+('Jonglierartikel', 'Bekleidung für Männer, Frauen und Kinder'),
+('Illusionen', 'Romane, Fachliteratur und Lehrbücher'),
+('Hilfsmittel', 'Ausrüstung und Bekleidung für Sportarten'),
+('Grimas Schminke', 'Artikel für Schule und Büro'),
+('Close Up', 'Spielwaren für Kinder jeden Alters'),
+('Bühne', 'Wohn- und Büromöbel');
 
 
 INSERT INTO sales (product_id, sale_time, quantity, payment_method, comment) VALUES

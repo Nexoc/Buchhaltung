@@ -16,12 +16,45 @@ public class UploadDirInitializer {
 
     @PostConstruct
     public void init() throws IOException {
-        Path path = Path.of(uploadDir);
-        if (!Files.exists(path)) {
-            Files.createDirectories(path); // Creates all intermediate directories
-            System.out.println("Created folder: " + path.toAbsolutePath());
-        } else {
-            System.out.println("Folder already exists: " + path.toAbsolutePath());
+        Path root = Path.of(uploadDir);
+        Path imagesDir = root.resolve("images");
+        Path productImagesDir = imagesDir.resolve("products");
+        Path categoryImagesDir = imagesDir.resolve("categories");
+        Path defaultCategoryImage = categoryImagesDir.resolve("default.jpg");
+
+        // Создание папки uploads/
+        if (Files.notExists(root)) {
+            Files.createDirectories(root);
+            System.out.println("Created: " + root.toAbsolutePath());
+        }
+
+        // Создание папки uploads/images/
+        if (Files.notExists(imagesDir)) {
+            Files.createDirectories(imagesDir);
+            System.out.println("Created: " + imagesDir.toAbsolutePath());
+        }
+
+        // Создание папки uploads/images/products/
+        if (Files.notExists(productImagesDir)) {
+            Files.createDirectories(productImagesDir);
+            System.out.println("Created: " + productImagesDir.toAbsolutePath());
+        }
+
+        // Создание папки uploads/images/categories/
+        if (Files.notExists(categoryImagesDir)) {
+            Files.createDirectories(categoryImagesDir);
+            System.out.println("Created: " + categoryImagesDir.toAbsolutePath());
+        }
+
+        // Копируем default.jpg, если не существует
+        if (Files.notExists(defaultCategoryImage)) {
+            Path source = Path.of("src/main/resources/static/default.jpg");
+            if (Files.exists(source)) {
+                Files.copy(source, defaultCategoryImage);
+                System.out.println("Copied default.jpg to: " + defaultCategoryImage.toAbsolutePath());
+            } else {
+                System.err.println("default.jpg not found in src/main/resources/static");
+            }
         }
     }
 }

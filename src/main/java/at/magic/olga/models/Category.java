@@ -18,6 +18,7 @@ public class Category {
     private Integer id;
     private String name;
     private String description;
+    private String imagePath;
 
     /**
      * One-to-many relationship to Product.
