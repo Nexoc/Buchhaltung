@@ -52,6 +52,15 @@ public class CategoryService {
     }
 
     @Transactional
+    public Category create(Category category) {
+        if (category.getImagePath() == null || category.getImagePath().isBlank()) {
+            category.setImagePath("images/categories/default.jpg");
+        }
+        return categoryRepo.save(category);
+    }
+
+
+    @Transactional
     public Category update(Integer id, Category updated) {
         Category existing = findById(id);
 

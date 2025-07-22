@@ -64,7 +64,13 @@ public class CategoryController {
                 .body(categoryMapper.toDto(category));
     }
 
-
+    @PostMapping
+    public ResponseEntity<CategoryDto> create(@RequestBody @Valid CategoryDto dto) {
+        Category created = categoryService.create(categoryMapper.toEntity(dto));
+        return ResponseEntity
+                .created(URI.create("/api/categories/" + created.getId()))
+                .body(categoryMapper.toDto(created));
+    }
 
     @PutMapping("/{id}")
     public ResponseEntity<CategoryDto> update(
@@ -93,4 +99,6 @@ public class CategoryController {
         categoryService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+
 }
